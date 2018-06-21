@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: @project.artifactId@
+server:
+  port: 9092
+  
+info:
+  app:
+    name: ${spring.application.name}
+    version: @project.parent.version@
+  build:
+    artifactId: @project.artifactId@
+    version: @project.parent.version@
+
+management:
+  security:
+    enabled: false
+  health: true
+
+
+eureka:
+  instance:
+    #实例id的组成，可自定义是否去除host
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://root:123@localhost:9091/eureka/
+
+#注册中心登录认证
+security:
+  basic:
+    enabled: true
+  user:
+    name: root
+    password: 123
+
+#使用Eureka服务器进行身份验证
+#如果其中一个eureka.client.serviceUrl.defaultZone网址中包含一个凭据（如http://user:password@localhost:8761/eureka）

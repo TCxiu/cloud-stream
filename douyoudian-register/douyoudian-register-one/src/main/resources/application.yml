@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: @project.artifactId@
+
+server:
+  port: 9091
+
+info:
+  app:
+    name: ${spring.application.name}
+    version: @project.parent.version@
+  build:
+    artifactId: @project.artifactId@
+    version: @project.parent.version@
+
+management:
+  security:
+    enabled: false
+  health: true
+
+#注册中心登录认证
+security:
+  basic:
+    enabled: true
+  user:
+    name: root
+    password: 123
+
+eureka:
+  instance:
+    prefer-ip-address: true
+     #实例id的组成，可自定义是否去除hostname
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}
+  client:
+    serviceUrl:
+      defaultZone: http://root:123@localhost:9092/eureka/
+
+    

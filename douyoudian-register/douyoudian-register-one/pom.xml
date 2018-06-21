@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.douyoudian</groupId>
+    <artifactId>douyoudian-register</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>douyoudian-register-one</artifactId>
+  <name>douyoudian-register-one</name>
+  <description>注册中心一</description>
+  
+  <dependencies>
+  	<!-- 服务注册中心 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+		</dependency>
+  </dependencies>
+  
+  <build>
+  	<finalName>douyoudian-register-1</finalName>
+  	<plugins>
+  		<plugin>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-maven-plugin</artifactId>
+			<configuration>
+				<jvmArguments>
+					-Xmx256m -Xms64m
+				</jvmArguments>
+				<mainClass>com.douyoudian.register.one.ServiceRegisterApplicationOne</mainClass>
+			</configuration>
+			<executions>
+				<execution>
+					<goals>
+						<goal>repackage</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+  	</plugins>
+  </build>
+</project>
