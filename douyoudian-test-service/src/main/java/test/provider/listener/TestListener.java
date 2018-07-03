@@ -1,17 +1,18 @@
 package test.provider.listener;
 
-import com.mongodb.WriteResult;
+import com.alibaba.fastjson.JSON;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-import test.provider.model.Test;
+import test.provider.Service.UserService;
+import test.provider.model.Message;
+import test.provider.model.User;
 import test.provider.mq.TestInPut;
-import java.util.concurrent.locks.ReentrantLock;
-
+import test.provider.repository.MessageResponsitory;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -22,29 +23,46 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @EnableBinding({TestInPut.class})
 public class TestListener {
+    @Autowired
+    UserService userService;
 
     @Autowired
-    MongoTemplate mongoTemplate;
-    private ReentrantLock lock = new ReentrantLock();
+    RedissonClient redissonClient;
+
+    @Autowired
+    MessageResponsitory messageResponsitory;
 
 
     @StreamListener(TestInPut.INPUT)
-    public void record(Test record) {
-        lock.lock();
+    public void record(Message msg) {
+        RLock lock = redissonClient.getLock("lock");
+        lock.lock(10, TimeUnit.MINUTES);
+        User record = JSON.parseObject(msg.getMessage(), User.class);
+        User user = userService.finduserById(record.getId());
 
-            Test test = mongoTemplate.findOne(Query.query(Criteria.where("_id").is(record.getId())), Test.class, "tests");
-            test.setMoney(test.getMoney().add(record.getMoney().negate()));
-            test.setVersion(test.getVersion()+1);
-            Update update = new Update();
-            update.set("_id",test.getId())
-                    .set("_class",test.getClass().getName())
-                    .set("version",test.getVersion())
-                    .set("money",test.getMoney());
+        user.setName(record.getName());
+        user.setMoney(user.getMoney().add(record.getMoney().negate()));
 
-            WriteResult writeResult = mongoTemplate.updateMulti(
-                    Query.query(Criteria.where("_id").is(record.getId())),
-                    update, "tests");
+        user.setUpdateTime(new Date());
+
+        userService.updateUser(user.getId(),user);
+
+        msg.setStatus("已接收");
+        msg.setMessage(JSON.toJSONString(user));
+        messageResponsitory.save(msg);
 
         lock.unlock();
+//            Test test = mongoTemplate.findOne(Query.query(Criteria.where("_id").is(record.getId())), Test.class, "tests");
+//            test.setMoney(test.getMoney().add(record.getMoney().negate()));
+//            Update update = new Update();
+//            update.set("_id",test.getId())
+//                    .set("_class",test.getClass().getName())
+//                    .set("birthday",new Date())
+//                    .set("name",record.getName())
+//                    .set("money",test.getMoney());
+//
+//            WriteResult writeResult = mongoTemplate.updateMulti(
+//            Query.query(Criteria.where("_id").is(record.getId())),
+//            update, "tests");
     }
 }

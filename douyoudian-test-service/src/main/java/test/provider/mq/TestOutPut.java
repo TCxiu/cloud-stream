@@ -1,7 +1,7 @@
 package test.provider.mq;
 
 import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.integration.amqp.channel.PointToPointSubscribableAmqpChannel;
 
 /**
  * @Auther 创建者: Tc李
@@ -11,5 +11,5 @@ import org.springframework.messaging.MessageChannel;
 
 public interface TestOutPut {
     @Output(TestInPut.INPUT)
-    MessageChannel output();
+    PointToPointSubscribableAmqpChannel output();
 }
