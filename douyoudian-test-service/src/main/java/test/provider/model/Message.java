@@ -48,7 +48,7 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message{" +
+        return "ActivityMqResponsitory{" +
                 "id=" + id +
                 ", status=" + status +
                 ", message=" + message +

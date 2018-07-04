@@ -2,7 +2,8 @@ package test.provider.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import test.provider.Service.SendMsgService;
+import test.provider.Service.SendMessageService;
+import test.provider.enumeration.ExchangeTypeEnum;
 import test.provider.model.User;
 
 /**
@@ -15,11 +16,11 @@ import test.provider.model.User;
 public class MsgController {
 
     @Autowired
-    SendMsgService sendMsgService;
+    SendMessageService sendMsgService;
 
     @PostMapping("/{id}")
     public Object sendMsg(@PathVariable Long id, @RequestBody User user){
-        boolean flag = sendMsgService.sendMsg(id,user);
+        boolean flag = sendMsgService.sendMessage(id,ExchangeTypeEnum.DIRECTEXCHANGE,user);
         return flag;
     }
 }

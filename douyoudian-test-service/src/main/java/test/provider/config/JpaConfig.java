@@ -20,9 +20,9 @@ class JpaConfig {
   @Bean
   public DataSource dataSource() {
     DruidDataSource datasource = new DruidDataSource();
-    datasource.setUrl("jdbc:mysql://192.168.0.189:3306/test?useSSL=false&characterEncoding=utf8&serverTimezone=UTC");
+    datasource.setUrl("jdbc:mysql://192.168.1.20:3306/test?useSSL=false&characterEncoding=utf8&serverTimezone=UTC");
     datasource.setUsername("root");
-    datasource.setPassword("Dyd_2018");
+    datasource.setPassword("203204");
     datasource.setDriverClassName("com.mysql.jdbc.Driver");
 //	        <!-- 初始化连接大小 -->
     datasource.setInitialSize(10);
