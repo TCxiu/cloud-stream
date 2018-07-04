@@ -2,6 +2,7 @@ package test.provider.Service;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import test.provider.enumeration.ExchangeTypeEnum;
@@ -21,7 +22,7 @@ import test.provider.utils.IdFactory;
 public class SendMessageService {
 
     @Autowired
-    AmqpTemplate amqpTemplate;
+    RabbitTemplate rabbitTemplate;
 
     @Autowired
     RabbitMqResponsitory rabbitMqResponsitory;
@@ -36,7 +37,7 @@ public class SendMessageService {
         rabbitMqResponsitory.setExchange(queueName,queueType);
         rabbitMqResponsitory.setBinding(queueName);
 
-        amqpTemplate.convertAndSend(queueName+"-exchange",queueName+"-key",user);
+        rabbitTemplate.convertAndSend(queueName + "-exchange", queueName + "-key", user);
 
         Message db = new Message();
         db.setId(IdFactory.nextId());

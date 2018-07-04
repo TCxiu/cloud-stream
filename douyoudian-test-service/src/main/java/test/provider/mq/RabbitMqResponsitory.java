@@ -42,12 +42,12 @@ public class RabbitMqResponsitory {
     }
 
     public void setQueue(String queueName, Boolean durable) {
-        Queue queue = new Queue(queueName+"-queue", durable, true, true, null);
+        Queue queue = new Queue(queueName+"-queue", durable, false, true, null);
         rabbitAdmin.declareQueue(queue);
         this.queue = queue;
     }
     public void setQueue(String queueName) {
-        Queue queue = new Queue(queueName+"-queue", true, true, false, null);
+        Queue queue = new Queue(queueName+"-queue", true, false, false, null);
         rabbitAdmin.declareQueue(queue);
         this.queue = queue;
     }

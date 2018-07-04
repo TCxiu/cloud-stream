@@ -1,7 +1,6 @@
 package test.provider.config;
 
 import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -36,6 +35,7 @@ public class RabbitMqConfig {
         connectionFactory.setPort(5672);
         connectionFactory.setUsername("admin");
         connectionFactory.setPassword("admin");
+        connectionFactory.setVirtualHost("/");
         connectionFactory.setConnectionTimeout(6000);
         connectionFactory.setChannelCheckoutTimeout(6000);
         connectionFactory.setCloseTimeout(6000);
@@ -51,11 +51,12 @@ public class RabbitMqConfig {
         container.setReceiveTimeout(10000L);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         container.setMessageConverter(new Jackson2JsonMessageConverter());
+        container.setAutoStartup(true);
         return container;
     }
 
     @Bean
-    public AmqpTemplate rabbitTemplate(){
+    public RabbitTemplate rabbitTemplate(){
         RabbitTemplate template = new RabbitTemplate(connectionFactory());
         template.setEncoding("UTF-8");
         template.setMessageConverter(new Jackson2JsonMessageConverter());
